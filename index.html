@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="英語資格試験のスコアを相互換算。TOEFL、IELTS、英検、TOEIC、ケンブリッジ英検など16種類の試験に対応。CEFRレベルを基準にした正確な換算ツール。">
+  <title>英語スコア換算ツール | English Score Converter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+</head>
+<body>
+  <!-- Animated Background Orbs -->
+  <div class="bg-orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header fade-in">
+      <span class="logo-icon">🌐</span>
+      <h1>英語スコア換算ツール</h1>
+      <p class="subtitle">16種類の英語資格試験スコアを瞬時に換算</p>
+    </header>
+
+    <!-- Step 1: Source Score Input -->
+    <div class="glass-card fade-in fade-in-delay-1" id="inputCard">
+      <div class="card-title">
+        <span class="step-badge">1</span>
+        所持スコアを入力
+      </div>
+
+      <div class="form-group">
+        <label for="sourceExam">試験を選択</label>
+        <select class="form-control" id="sourceExam">
+          <option value="" disabled selected>試験を選んでください</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="scoreInputGroup" style="display: none;">
+        <label for="sourceScore">スコアを入力</label>
+        <input type="number" class="form-control" id="sourceScore" placeholder="スコアを入力">
+        <div class="score-range-hint" id="scoreRangeHint"></div>
+      </div>
+
+      <div class="form-group" id="gradeInputGroup" style="display: none;">
+        <label for="sourceGrade">級を選択</label>
+        <select class="form-control" id="sourceGrade">
+          <option value="" disabled selected>級を選んでください</option>
+        </select>
+      </div>
+
+      <!-- Arrow Divider -->
+      <div class="arrow-divider">⬇</div>
+
+      <!-- Step 2: Target Exam -->
+      <div class="card-title" style="margin-top: 8px;">
+        <span class="step-badge">2</span>
+        換算先の試験を選択
+      </div>
+
+      <div class="form-group">
+        <label for="targetExam">換算先の試験</label>
+        <select class="form-control" id="targetExam" disabled>
+          <option value="" disabled selected>まず所持試験を選んでください</option>
+        </select>
+      </div>
+
+      <!-- Convert Button -->
+      <button class="convert-btn" id="convertBtn" disabled>
+        🔄 換算する
+      </button>
+
+      <!-- Error Message -->
+      <div class="error-message" id="errorMessage">
+        <span class="icon">⚠️</span>
+        <span id="errorText"></span>
+      </div>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section" id="resultSection">
+      <div class="glass-card result-card fade-in">
+        <div class="card-title">
+          <span class="step-badge">✓</span>
+          換算結果
+        </div>
+
+        <div class="result-main">
+          <!-- Source info -->
+          <div class="result-source">
+            <span class="source-exam" id="resultSourceExam"></span>
+            <span class="source-score" id="resultSourceScore"></span>
+          </div>
+
+          <span class="result-arrow">↓</span>
+
+          <!-- Target result -->
+          <div class="result-target-exam" id="resultTargetExam"></div>
+          <div class="result-score" id="resultTargetScore"></div>
+
+          <!-- Approximate Badge -->
+          <div class="result-approximate" id="resultApproximate" style="display: none;">
+            ※ 近似値
+          </div>
+        </div>
+
+        <!-- CEFR Badge -->
+        <div class="cefr-badge-container">
+          <span class="cefr-label">CEFRレベル</span>
+          <span class="cefr-badge" id="cefrBadge"></span>
+        </div>
+        <div class="cefr-description" id="cefrDescription"></div>
+
+        <!-- CEFR Level Bar -->
+        <div class="cefr-bar-container">
+          <div class="cefr-bar-title">CEFR レベル一覧</div>
+          <div class="cefr-bar" id="cefrBar"></div>
+        </div>
+
+        <!-- Approximate Message -->
+        <div class="approx-message" id="approxMessage">
+          <span class="icon">⚡</span>
+          <span id="approxText"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="info-section fade-in fade-in-delay-3">
+      <button class="info-toggle" id="cefrInfoToggle">
+        📊 CEFRレベルとは？
+        <span class="arrow">▼</span>
+      </button>
+      <div class="info-content" id="cefrInfoContent">
+        <div class="info-content-inner">
+          <p>CEFR（ヨーロッパ言語共通参照枠）は、言語能力を共通の基準で評価するための国際標準です。6段階（A1〜C2）で構成され、各英語試験のスコアをこの基準に照らし合わせることで、異なる試験間の比較が可能になります。</p>
+          <table class="cefr-table" id="cefrTable">
+            <thead>
+              <tr>
+                <th>レベル</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <button class="info-toggle" id="examInfoToggle">
+        📝 対応試験一覧
+        <span class="arrow">▼</span>
+      </button>
+      <div class="info-content" id="examInfoContent">
+        <div class="info-content-inner">
+          <table class="cefr-table" id="examTable">
+            <thead>
+              <tr>
+                <th>試験名</th>
+                <th>種類</th>
+                <th>カテゴリ</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer fade-in fade-in-delay-3">
+      <p>英語スコア換算ツール — 16種類の英語資格試験に対応</p>
+      <p class="disclaimer">
+        ※ 換算結果は目安であり、各試験の公式な換算値とは異なる場合があります。<br>
+        CEFRレベルを共通基準として近似的に算出しています。
+      </p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="data/conversionData.js"></script>
+  <script src="js/converter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
